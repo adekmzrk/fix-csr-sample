@@ -1,6 +1,9 @@
 <?php
 
 include 'functions.php';
+if (!isset($_SESSION['user'])) {
+    header("location: login.php");
+}
 $pdo = pdo_connect();
 
 if (isset($_GET['id'])) {

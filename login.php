@@ -18,8 +18,8 @@
         $pass = $_POST['password'];
         $salt = "XDrBmrW9g2fb";
         $pdo = pdo_connect();
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = "' . $user . '" AND password = "' . hash('sha256', $pass . $salt) . '" LIMIT 1');
-        $stmt->execute();
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1'); 
+        $stmt->execute([$user, hash('sha256', $pass . $salt)]);
         $notif = $stmt->rowCount();
         if ($stmt->rowCount() > 0) {
             $_SESSION['user'] = $user;

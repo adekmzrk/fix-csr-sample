@@ -1,7 +1,10 @@
 <?php
 include 'functions.php';
-$pdo = pdo_connect();
+if (!isset($_SESSION['user'])) {
+    header("location: login.php");
+}
 
+$pdo = pdo_connect();
 if (!empty($_POST)) {
     $name = $_POST['name'];
     $email = $_POST['email'];
