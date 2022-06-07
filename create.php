@@ -6,10 +6,16 @@ if (!isset($_SESSION['user'])) {
 
 $pdo = pdo_connect();
 if (!empty($_POST)) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $title = $_POST['title'];
+    function sanitize($data){
+        $data = htmlspecialchars($data);
+        $data = stripslashes($data);
+        $data = trim($data);
+        return $data;
+    }
+    $name = sanitize($_POST['name']);
+    $email = sanitize($_POST['email']);
+    $phone = sanitize($_POST['phone']);
+    $title = sanitize($_POST['title']);
     $created = date('Y-m-d H:i:s');
     // Insert new record into the contacts table
     $stmt = $pdo->prepare('INSERT INTO contacts VALUES (?, ?, ?, ?, ?, ?)');

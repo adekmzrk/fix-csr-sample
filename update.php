@@ -8,10 +8,17 @@ $pdo = pdo_connect();
 
 if (isset($_GET['id'])) {
     if (!empty($_POST)) {
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $title = $_POST['title'];
+        function sanitize($data){
+            $data = htmlspecialchars($data);
+            $data = stripslashes($data);
+            $data = trim($data);
+            return $data;
+        }
+
+        $name = sanitize($_POST['name']);
+        $email = sanitize($_POST['email']);
+        $phone = sanitize($_POST['phone']);
+        $title = sanitize($_POST['title']);
         // Insert new record into the contacts table
         $stmt = $pdo->prepare('UPDATE contacts SET name = ?, email = ?, phone = ?, title = ? WHERE id = ?');
         $stmt->execute([$name, $email, $phone, $title, $_GET['id']]);

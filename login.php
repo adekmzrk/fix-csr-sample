@@ -12,10 +12,16 @@
     <?php
     $notif = null;
     if (isset($_POST['username']) && isset($_POST['password'])) {
+        function sanitize($data){
+            $data = htmlspecialchars($data);
+            $data = stripslashes($data);
+            $data = trim($data);
+            return $data;
+        }
 
         session_start();
-        $user = $_POST['username'];
-        $pass = $_POST['password'];
+        $user = sanitize($_POST['username']);
+        $pass = sanitize($_POST['password']);
         $salt = "XDrBmrW9g2fb";
         $pdo = pdo_connect();
         $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1'); 
