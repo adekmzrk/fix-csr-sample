@@ -22,10 +22,16 @@
         session_start();
         $user = sanitize($_POST['username']);
         $pass = sanitize($_POST['password']);
-        $salt = "XDrBmrW9g2fb";
+
         $pdo = pdo_connect();
+        $stmt = $pdo->prepare('SELECT salt FROM users WHERE username = ? LIMIT 1'); 
+        $stmt->execute([$user]);
+        $saltx = $stmt->fetch(PDO::FETCH_ASSOC);
+        $salt = implode(',', $saltx);
+
         $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1'); 
         $stmt->execute([$user, hash('sha256', $pass . $salt)]);
+
         $notif = $stmt->rowCount();
         if ($stmt->rowCount() > 0) {
             $_SESSION['user'] = $user;
