@@ -1,9 +1,6 @@
 <?php
-
 include 'functions.php';
-if (!isset($_SESSION['user'])) {
-    header("location: login.php");
-}
+require_once 'validate.php';
 $pdo = pdo_connect();
 
 if (isset($_GET['id'])) {
@@ -20,8 +17,10 @@ if (isset($_GET['id'])) {
         $phone = sanitize($_POST['phone']);
         $title = sanitize($_POST['title']);
         // Insert new record into the contacts table
+        $pdo->beginTransaction();
         $stmt = $pdo->prepare('UPDATE contacts SET name = ?, email = ?, phone = ?, title = ? WHERE id = ?');
         $stmt->execute([$name, $email, $phone, $title, $_GET['id']]);
+        $pdo->commit();
         header("location:index.php");
     }
 

@@ -1,12 +1,10 @@
 <?php
 
-
-
 function pdo_connect(){
     $myfile = fopen("secret.txt", "r") or die("Unable to open file!");
     $secc = fgets($myfile);
     fclose($myfile);
-    
+
     $DATABASE_HOST = 'localhost';
     $DATABASE_USER = 'root';
     $DATABASE_PASS = $secc;

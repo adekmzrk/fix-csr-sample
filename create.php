@@ -1,10 +1,8 @@
 <?php
 include 'functions.php';
-if (!isset($_SESSION['user'])) {
-    header("location: login.php");
-}
-
+require_once 'validate.php';
 $pdo = pdo_connect();
+$notif = null;
 if (!empty($_POST)) {
     function sanitize($data){
         $data = htmlspecialchars($data);
@@ -16,11 +14,16 @@ if (!empty($_POST)) {
     $email = sanitize($_POST['email']);
     $phone = sanitize($_POST['phone']);
     $title = sanitize($_POST['title']);
-    $created = date('Y-m-d H:i:s');
-    // Insert new record into the contacts table
-    $stmt = $pdo->prepare('INSERT INTO contacts VALUES (?, ?, ?, ?, ?, ?)');
-    $stmt->execute([$id, $name, $email, $phone, $title, $created]);
-    header("location:index.php");
+    if(!empty($name)||!empty($email)||!empty($phone)||!empty($title)){
+        $created = date('Y-m-d H:i:s');
+        // Insert new record into the contacts table
+        $stmt = $pdo->prepare('INSERT INTO contacts VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$id, $name, $email, $phone, $title, $created]);
+        header("location:index.php");
+    } else {
+        $notif = "Data tidak boleh ada yang kosong";
+    }
+    
 }
 ?>
 <!DOCTYPE html>
@@ -46,6 +49,10 @@ if (!empty($_POST)) {
                             <input class="form-control form-control-sm" placeholder="Email" type="text" name="email" id="email" required><br>
                             <input class="form-control form-control-sm" placeholder="Phone number" type="text" name="phone" id="phone" required><br>
                             <input class="form-control form-control-sm" placeholder="Title" type="text" name="title" id="title" required><br>
+                            <label>
+                                <?= $notif ?>
+                            </label>
+                            <br>
                             <input class="btn btn-primary btn-sm" type="submit" value="Save">
                             <a href="index.php" type="button" class="btn btn-warning btn-sm">Cancel</a>
                         </form>
