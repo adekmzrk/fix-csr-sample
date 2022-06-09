@@ -1,8 +1,7 @@
 <?php
 
 include 'functions.php';
-
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user']) && !isset($_SESSION['token'])) {
     header("location: login.php");
 } else {
     $pdo = pdo_connect();

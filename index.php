@@ -1,13 +1,11 @@
 <?php
 include "functions.php";
-session_start();
-if (!isset($_SESSION['user'])) {
-    header("location: login.php");
-} else {
-    $pdo = pdo_connect();
-    $stmt = $pdo->prepare('SELECT * FROM contacts');
-    $stmt->execute();
-    $contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+require_once "validate.php";
+
+$pdo = pdo_connect();
+$stmt = $pdo->prepare('SELECT * FROM contacts');
+$stmt->execute();
+$contacts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -88,4 +86,3 @@ if (!isset($_SESSION['user'])) {
     </body>
 
     </html>
-<?php } ?>

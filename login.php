@@ -11,44 +11,18 @@
 <body class="text-center">
     <?php
     $notif = null;
-    if (isset($_POST['username']) && isset($_POST['password'])) {
-        function sanitize($data){
-            $data = htmlspecialchars($data);
-            $data = stripslashes($data);
-            $data = trim($data);
-            return $data;
-        }
-
-        session_start();
-        $user = sanitize($_POST['username']);
-        $pass = sanitize($_POST['password']);
-
-        $pdo = pdo_connect();
-        $stmt = $pdo->prepare('SELECT salt FROM users WHERE username = ? LIMIT 1'); 
-        $stmt->execute([$user]);
-        $saltx = $stmt->fetch(PDO::FETCH_ASSOC);
-        $salt = implode(',', $saltx);
-
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1'); 
-        $stmt->execute([$user, hash('sha256', $pass . $salt)]);
-
-        $notif = $stmt->rowCount();
-        if ($stmt->rowCount() > 0) {
-            $_SESSION['user'] = $user;
-            header("location: index.php");
-        } else {
-            $notif = "Wrong usename or password";
-        }
-    }
-
+    session_start();
+    $_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(32));
+    
     ?>
-    <form class="form-signin" method="POST">
+    <form action="post.php" class="form-signin" method="POST">
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <label for="inputUsername" class="sr-only">Username</label>
         <input type="username" id="inputUsername" name="username" class="form-control" placeholder="Username" required autofocus>
         <br>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+        <input type="hidden" name="token" value="<?= $_SESSION['token'] ?> " >
         <div class="checkbox mb-3">
             <label>
                 <?= $notif ?>
